@@ -6,6 +6,7 @@ from temporalio.client import Client
 from temporalio.worker import Worker
 
 from .config import settings
+from .chat_api import start_chat_api
 from .activities import supabase_core, notifications
 from .activities import bedrock, forex_data, supabase_forex, technical_analysis
 from .workflows.example.approval_workflow import ApprovalWorkflow
@@ -82,7 +83,12 @@ async def main() -> None:
     )
 
     logger.info("Worker started task_queue=%s", settings.temporal_task_queue)
-    await worker.run()
+
+    chat_runner = await start_chat_api(client)
+    try:
+        await worker.run()
+    finally:
+        await chat_runner.cleanup()
 
 
 if __name__ == "__main__":

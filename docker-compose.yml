@@ -72,6 +72,8 @@ services:
     # Reach the host-bound Supabase API from inside the container.
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    ports:
+      - "8081:8081"
     environment:
       - TEMPORAL_ADDRESS=${TEMPORAL_ADDRESS:-temporal:7233}
       - TEMPORAL_NAMESPACE=${TEMPORAL_NAMESPACE:-default}

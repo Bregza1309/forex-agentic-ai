@@ -96,15 +96,22 @@ export function useChatMessages(conversationId: string | undefined) {
   });
 }
 
+const CHAT_API_URL = import.meta.env.VITE_CHAT_API_URL || 'http://localhost:8081';
+
 export function useSendMessage() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ message, conversationId }: { message: string; conversationId: string }) => {
-      const { data, error } = await supabase.functions.invoke('chat', {
-        body: { message, conversation_id: conversationId },
+      const resp = await fetch(`${CHAT_API_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, conversation_id: conversationId }),
       });
-      if (error) throw error;
-      return data;
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: 'Chat request failed' }));
+        throw new Error(err.error || `HTTP ${resp.status}`);
+      }
+      return resp.json();
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['chat-messages', variables.conversationId] });
