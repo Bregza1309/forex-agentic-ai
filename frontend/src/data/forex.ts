@@ -66,7 +66,7 @@ export function usePairPriceHistory(pairId: string | undefined, limit = 50) {
 
       const { data, error } = await supabase
         .from('time_series_points')
-        .select('id, observed_at, data')
+        .select('id, observed_at, data_payload')
         .eq('entity_id', pairId!)
         .eq('fact_type_id', factType?.id ?? '')
         .order('observed_at', { ascending: false })
