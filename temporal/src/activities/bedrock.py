@@ -103,7 +103,7 @@ async def call_bedrock_chat(
             modelId=resolved_model,
             system=[{"text": system_prompt}],
             messages=converse_messages,
-            inferenceConfig={"maxTokens": 4096, "temperature": 0.7},
+            inferenceConfig={"maxTokens": 4096},
         )
 
         output_text = ""

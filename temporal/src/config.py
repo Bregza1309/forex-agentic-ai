@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     fred_api_key: str = Field("", env="FRED_API_KEY")
     news_api_key: str = Field("", env="NEWS_API_KEY")
     aws_region: str = Field("eu-west-1", env="AWS_REGION")
-    bedrock_model_chat: str = Field("anthropic.claude-haiku-5-5-v1", env="BEDROCK_MODEL_CHAT")
-    bedrock_model_analysis: str = Field("anthropic.claude-sonnet-5-5-v1", env="BEDROCK_MODEL_ANALYSIS")
+    bedrock_model_chat: str = Field("eu.anthropic.claude-haiku-5-5", env="BEDROCK_MODEL_CHAT")
+    bedrock_model_analysis: str = Field("eu.anthropic.claude-sonnet-5-5", env="BEDROCK_MODEL_ANALYSIS")
 
     class Config:
         case_sensitive = False
