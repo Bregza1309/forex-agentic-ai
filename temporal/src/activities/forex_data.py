@@ -118,10 +118,10 @@ async def fetch_prices_alpha_vantage(pair: str) -> dict:
 @activity.defn
 async def fetch_ecb_rates() -> list[dict]:
     """Fetch daily EUR reference rates from Frankfurter (ECB mirror). Unlimited, no key."""
-    url = "https://api.frankfurter.app/latest"
+    url = "https://api.frankfurter.dev/v1/latest"
     results: list[dict] = []
 
-    async with httpx.AsyncClient(timeout=30) as client:
+    async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
         resp = await client.get(url)
         resp.raise_for_status()
         data = resp.json()

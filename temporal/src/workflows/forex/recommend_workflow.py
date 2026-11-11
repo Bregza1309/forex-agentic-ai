@@ -3,6 +3,7 @@ import json
 from datetime import timedelta
 
 from temporalio import workflow
+from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
     from ...activities.bedrock import call_bedrock_chat
@@ -75,7 +76,7 @@ class RecommendWorkflow:
                 None,
             ],
             start_to_close_timeout=timedelta(seconds=60),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=2),
+            retry_policy=RetryPolicy(maximum_attempts=2),
         )
 
         content = result.get("content", "[]")

@@ -2,6 +2,7 @@ from __future__ import annotations
 from datetime import timedelta
 
 from temporalio import workflow
+from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
     from ...activities.forex_data import fetch_fred_indicators, fetch_ecb_rates
@@ -18,13 +19,13 @@ class EconomicDataWorkflow:
             fetch_fred_indicators,
             args=[["DFF", "CPIAUCSL", "GDP", "UNRATE", "T10Y2Y"]],
             start_to_close_timeout=timedelta(seconds=60),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=3),
+            retry_policy=RetryPolicy(maximum_attempts=3),
         )
 
         ecb_rates = await workflow.execute_activity(
             fetch_ecb_rates,
             start_to_close_timeout=timedelta(seconds=60),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=2),
+            retry_policy=RetryPolicy(maximum_attempts=2),
         )
 
         ecb_inserted = 0

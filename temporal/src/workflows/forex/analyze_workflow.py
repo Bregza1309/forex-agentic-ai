@@ -3,6 +3,7 @@ import json
 from datetime import timedelta
 
 from temporalio import workflow
+from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
     from ...activities.bedrock import call_bedrock_analysis
@@ -59,7 +60,7 @@ class AnalyzeWorkflow:
                 [{"role": "user", "content": prompt}],
             ],
             start_to_close_timeout=timedelta(seconds=90),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=2),
+            retry_policy=RetryPolicy(maximum_attempts=2),
         )
 
         return {

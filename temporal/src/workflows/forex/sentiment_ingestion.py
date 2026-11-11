@@ -2,6 +2,7 @@ from __future__ import annotations
 from datetime import timedelta
 
 from temporalio import workflow
+from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
     from ...activities.forex_data import fetch_news_headlines
@@ -19,7 +20,7 @@ class SentimentIngestionWorkflow:
             fetch_news_headlines,
             args=["forex OR currency exchange OR FX market"],
             start_to_close_timeout=timedelta(seconds=60),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=2),
+            retry_policy=RetryPolicy(maximum_attempts=2),
         )
 
         if not headlines_data:
@@ -31,7 +32,7 @@ class SentimentIngestionWorkflow:
             score_sentiment,
             args=[headlines],
             start_to_close_timeout=timedelta(seconds=60),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=2),
+            retry_policy=RetryPolicy(maximum_attempts=2),
         )
 
         overall_score = sentiment.get("score", 0.0)

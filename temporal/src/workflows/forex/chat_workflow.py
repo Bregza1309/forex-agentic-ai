@@ -3,6 +3,7 @@ import uuid
 from datetime import timedelta
 
 from temporalio import workflow
+from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
     from ...activities.bedrock import call_bedrock_chat, FOREX_SYSTEM_PROMPT
@@ -56,7 +57,7 @@ class ChatWorkflow:
             call_bedrock_chat,
             args=[system_prompt, messages, None],
             start_to_close_timeout=timedelta(seconds=60),
-            retry_policy=workflow.RetryPolicy(maximum_attempts=2),
+            retry_policy=RetryPolicy(maximum_attempts=2),
         )
 
         response_text = result.get("content", "")
